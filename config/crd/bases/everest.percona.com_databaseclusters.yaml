@@ -349,6 +349,9 @@ spec:
                         type: string
                     type: object
                 type: object
+              groupName:
+                description: Group of cluster
+                type: string
               monitoring:
                 description: Monitoring is the monitoring configuration
                 properties:

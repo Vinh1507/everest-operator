@@ -51,6 +51,7 @@ import (
 	everestv1alpha1 "github.com/percona/everest-operator/api/everest/v1alpha1"
 	"github.com/percona/everest-operator/internal/consts"
 	enginefeatureseverestcontroller "github.com/percona/everest-operator/internal/controller/enginefeatures.everest"
+	"github.com/percona/everest-operator/internal/controller/everest"
 	controllers "github.com/percona/everest-operator/internal/controller/everest"
 	"github.com/percona/everest-operator/internal/controller/everest/common"
 	"github.com/percona/everest-operator/internal/predicates"
@@ -394,6 +395,13 @@ func main() {
 			os.Exit(1)
 		}
 		// ------------------ End of Engine Features webhooks ------------------
+	}
+	if err := (&everest.ClusterGroupReconciler{
+		Client: mgr.GetClient(),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "ClusterGroup")
+		os.Exit(1)
 	}
 	// +kubebuilder:scaffold:builder
 

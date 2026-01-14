@@ -367,6 +367,7 @@ func (r *DatabaseClusterReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 		}
 		return reconcile.Result{}, err
 	}
+	fmt.Println(">>>>>>>>>>>>>>>>>>>>> CLUSTER RECONCILE", database.GetName())
 
 	logger = logger.WithValues(
 		"cluster", database.GetName(),
@@ -580,6 +581,21 @@ func (r *DatabaseClusterReconciler) initIndexers(ctx context.Context, mgr ctrl.M
 		return err
 	}
 
+	if err := mgr.GetFieldIndexer().IndexField(
+		ctx,
+		&everestv1alpha1.DatabaseCluster{},
+		"spec.groupName",
+		func(obj client.Object) []string {
+			cluster := obj.(*everestv1alpha1.DatabaseCluster)
+			if cluster.Spec.GroupName == "" {
+				return nil
+			}
+			return []string{cluster.Spec.GroupName}
+		},
+	); err != nil {
+		return err
+	}
+
 	// Index the BackupStorageName of the PITR spec so that it can be used by
 	// the databaseClustersThatReferenceObject function to find all
 	// DatabaseClusters that reference a specific BackupStorage through the
@@ -725,6 +741,44 @@ func (r *DatabaseClusterReconciler) initWatchers(controller *builder.Builder, de
 		&corev1.Namespace{},
 		common.EnqueueObjectsInNamespace(r.Client, &everestv1alpha1.DatabaseClusterList{}),
 		builder.WithPredicates(defaultPredicate),
+	)
+	controller.Watches(
+		&everestv1alpha1.ClusterGroup{},
+		handler.EnqueueRequestsFromMapFunc(
+			func(ctx context.Context, obj client.Object) []reconcile.Request {
+				group, ok := obj.(*everestv1alpha1.ClusterGroup)
+				if !ok {
+					return nil
+				}
+
+				var clusters everestv1alpha1.DatabaseClusterList
+				if err := r.List(ctx, &clusters,
+					client.InNamespace(group.Namespace),
+					client.MatchingFields{
+						"spec.groupName": group.Name,
+					},
+				); err != nil {
+					return nil
+				}
+
+				reqs := make([]reconcile.Request, 0, len(clusters.Items))
+				for _, c := range clusters.Items {
+					reqs = append(reqs, reconcile.Request{
+						NamespacedName: types.NamespacedName{
+							Name:      c.Name,
+							Namespace: c.Namespace,
+						},
+					})
+				}
+				return reqs
+			},
+		),
+		builder.WithPredicates(defaultPredicate),
+		// builder.WithPredicates(predicate.Funcs{
+		// 	UpdateFunc: func(e event.UpdateEvent) bool {
+		// 		return e.ObjectOld.GetGeneration() != e.ObjectNew.GetGeneration()
+		// 	},
+		// }),
 	)
 	controller.Owns(&everestv1alpha1.BackupStorage{})
 	controller.Owns(&everestv1alpha1.DataImportJob{})

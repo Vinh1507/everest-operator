@@ -95,6 +95,7 @@ rules:
   - everest.percona.com
   resources:
   - backupstorages
+  - clustergroups
   - databaseclusterbackups
   - databaseclusterrestores
   - databaseclusters
@@ -115,6 +116,7 @@ rules:
   - everest.percona.com
   resources:
   - backupstorages/finalizers
+  - clustergroups/finalizers
   - databaseclusterbackups/finalizers
   - databaseclusterrestores/finalizers
   - databaseclusters/finalizers
@@ -126,6 +128,7 @@ rules:
   - everest.percona.com
   resources:
   - backupstorages/status
+  - clustergroups/status
   - databaseclusterbackups/status
   - databaseclusterrestores/status
   - databaseclusters/status

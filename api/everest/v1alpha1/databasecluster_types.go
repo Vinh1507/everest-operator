@@ -426,6 +426,10 @@ type EngineFeaturesStatus struct {
 
 // DatabaseClusterSpec defines the desired state of DatabaseCluster.
 type DatabaseClusterSpec struct {
+	// Group of cluster
+	// +optional
+	GroupName string `json:"groupName,omitempty"`
+
 	// Paused is a flag to stop the cluster
 	Paused bool `json:"paused,omitempty"`
 	// AllowUnsafeConfiguration field used to ensure that the user can create configurations unfit for production use.
