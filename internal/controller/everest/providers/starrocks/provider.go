@@ -73,7 +73,7 @@ func New(
 	// Get operator version.
 	v, err := common.GetOperatorVersion(ctx, opts.C, types.NamespacedName{
 		Name:      consts.StarRocksDeploymentName,
-		Namespace: opts.DB.GetNamespace(),
+		Namespace: consts.StarRocksOperatorNamespace,
 	})
 	if err != nil {
 		return nil, err

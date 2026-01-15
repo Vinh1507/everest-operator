@@ -32,6 +32,7 @@ import (
 	psmdbv1 "github.com/percona/percona-server-mongodb-operator/pkg/apis/psmdb/v1"
 	pxcv1 "github.com/percona/percona-xtradb-cluster-operator/pkg/apis/pxc/v1"
 	corev1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -119,7 +120,14 @@ func init() {
 	utilruntime.Must(psmdbv1.SchemeBuilder.AddToScheme(scheme))
 	utilruntime.Must(pxcv1.SchemeBuilder.AddToScheme(scheme))
 	utilruntime.Must(crunchyv1beta1.SchemeBuilder.AddToScheme(scheme))
-	utilruntime.Must(starrocksv1.SchemeBuilder.AddToScheme(scheme))
+	scheme.AddKnownTypes(starrocksv1.GroupVersion,
+		&starrocksv1.StarRocksCluster{},
+		&starrocksv1.StarRocksClusterList{},
+		&starrocksv1.StarRocksWarehouse{},
+		&starrocksv1.StarRocksWarehouseList{},
+	)
+	metav1.AddToGroupVersion(scheme, starrocksv1.GroupVersion)
+	//utilruntime.Must(starrocksv1.SchemeBuilder.AddToScheme(scheme))
 	// +kubebuilder:scaffold:scheme
 }
 

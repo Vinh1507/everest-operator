@@ -43,7 +43,10 @@ const (
 	// PGDeploymentName is the name of the Percona PostgreSQL operator deployment.
 	PGDeploymentName = "percona-postgresql-operator"
 	// StarRocksDeploymentName  is the name of the StarRocks operator deployment.
-	StarRocksDeploymentName = "starrocks-operator"
+	StarRocksDeploymentName = "kube-starrocks-operator"
+
+	// StarRocksOperatorNamespace is the namespace where StarRocks operator is deployed.
+	StarRocksOperatorNamespace = "starrocks"
 
 	// PXCAPIGroup is the API group for Percona XtraDB Cluster.
 	PXCAPIGroup = "pxc.percona.com"
