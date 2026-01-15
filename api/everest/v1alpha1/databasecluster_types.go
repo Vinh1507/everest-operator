@@ -182,7 +182,7 @@ type Resources struct {
 // Engine is the engine configuration.
 type Engine struct {
 	// Type is the engine type
-	// +kubebuilder:validation:Enum:=pxc;postgresql;psmdb
+	// +kubebuilder:validation:Enum:=pxc;postgresql;psmdb;clickhouse;starrocks
 	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message=".spec.engine.type cannot be changed"
 	Type EngineType `json:"type"`
 	// Version is the engine version

@@ -40,6 +40,8 @@ const (
 	DatabaseEnginePSMDB EngineType = "psmdb"
 	// DatabaseEnginePostgresql represents engine type for Postgresql clusters.
 	DatabaseEnginePostgresql EngineType = "postgresql"
+	// DatabaseEngineStarRocks represents engine type for Starrocks clusters
+	DatabaseEngineStarRocks EngineType = "starrocks"
 
 	// DBEngineComponentRecommended represents recommended component status.
 	DBEngineComponentRecommended ComponentStatus = "recommended"

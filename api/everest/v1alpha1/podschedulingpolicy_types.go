@@ -60,7 +60,7 @@ type AffinityConfig struct {
 // PodSchedulingPolicySpec defines the desired state of PodSchedulingPolicy.
 type PodSchedulingPolicySpec struct {
 	// EngineType is type of DB engine that this policy can be applied to.
-	// +kubebuilder:validation:Enum=pxc;postgresql;psmdb
+	// +kubebuilder:validation:Enum=pxc;postgresql;psmdb;clickhouse;starrocks
 	EngineType EngineType `json:"engineType"`
 	// AffinityConfig is a configuration for the affinity settings depending on the engine type.
 	AffinityConfig *AffinityConfig `json:"affinityConfig,omitempty"`

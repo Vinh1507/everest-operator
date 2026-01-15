@@ -42,6 +42,8 @@ const (
 	PSMDBDeploymentName = "percona-server-mongodb-operator"
 	// PGDeploymentName is the name of the Percona PostgreSQL operator deployment.
 	PGDeploymentName = "percona-postgresql-operator"
+	// StarRocksDeploymentName  is the name of the StarRocks operator deployment.
+	StarRocksDeploymentName = "starrocks-operator"
 
 	// PXCAPIGroup is the API group for Percona XtraDB Cluster.
 	PXCAPIGroup = "pxc.percona.com"
@@ -49,6 +51,8 @@ const (
 	PSMDBAPIGroup = "psmdb.percona.com"
 	// PGAPIGroup is the API group for Percona PostgreSQL.
 	PGAPIGroup = "pgv2.percona.com"
+	// SRAPIGroup is the API group for StarRocks.
+	SRAPIGroup = "starrocks.com"
 
 	// PerconaXtraDBClusterKind is the kind for Percona XtraDB Cluster.
 	PerconaXtraDBClusterKind = "PerconaXtraDBCluster"
@@ -60,6 +64,9 @@ const (
 	PerconaXtraDBClusterRestoreKind = "PerconaXtraDBClusterRestore"
 	// LoadBalancerConfigKind is the kind for load balancer configs.
 	LoadBalancerConfigKind = "LoadBalancerConfig"
+
+	// StarRocksClusterKind is the kind for StarRock Installation
+	StarRocksClusterKind = "StarRocksCluster"
 
 	// DatabaseClusterKind is the kind for DatabaseClusterKind.
 	DatabaseClusterKind = "DatabaseCluster"

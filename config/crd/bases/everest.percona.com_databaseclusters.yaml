@@ -319,6 +319,8 @@ spec:
                     - pxc
                     - postgresql
                     - psmdb
+                    - clickhouse
+                    - starrocks
                     type: string
                     x-kubernetes-validations:
                     - message: .spec.engine.type cannot be changed

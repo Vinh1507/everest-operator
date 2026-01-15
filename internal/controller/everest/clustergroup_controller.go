@@ -54,7 +54,6 @@ func (r *ClusterGroupReconciler) Reconcile(
 	ctx context.Context,
 	req ctrl.Request,
 ) (ctrl.Result, error) {
-
 	// log := logf.FromContext(ctx)
 	fmt.Println(">>>>> GROUP RECONCILE")
 
@@ -129,12 +128,11 @@ func (r *ClusterGroupReconciler) Reconcile(
 	}
 
 	// 4. Chỉ update status khi CÓ THAY ĐỔI
-	changed :=
-		group.Status.ReadyClusters != ready ||
-			group.Status.TotalClusters != total ||
-			group.Status.Phase != phase ||
-			!reflect.DeepEqual(group.Status.Clusters, statuses) ||
-			group.Status.ObservedGeneration != group.Generation
+	changed := group.Status.ReadyClusters != ready ||
+		group.Status.TotalClusters != total ||
+		group.Status.Phase != phase ||
+		!reflect.DeepEqual(group.Status.Clusters, statuses) ||
+		group.Status.ObservedGeneration != group.Generation
 
 	if !changed {
 		return ctrl.Result{}, nil

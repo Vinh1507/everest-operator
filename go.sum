@@ -81,6 +81,8 @@ github.com/OpenPeeDeeP/depguard/v2 v2.2.1 h1:vckeWVESWp6Qog7UZSARNqfu/cZqvki8zsu
 github.com/OpenPeeDeeP/depguard/v2 v2.2.1/go.mod h1:q4DKzC4UcVaAvcfd41CZh0PWpGgzrVxUYBlgKNGquUo=
 github.com/ProtonMail/go-crypto v1.1.3 h1:nRBOetoydLeUb4nHajyO2bKqMLfWQ/ZPwkXqXxPxCFk=
 github.com/ProtonMail/go-crypto v1.1.3/go.mod h1:rA3QumHc/FZ8pAHreoekgiAbzpNsfQAosU5td4SnOrE=
+github.com/StarRocks/starrocks-kubernetes-operator v1.11.3 h1:Xpj+b3rAP78FRRXzzZxIkFMKWK/p64VQKGENjrUzIo4=
+github.com/StarRocks/starrocks-kubernetes-operator v1.11.3/go.mod h1:8XqZ2+a2p1Nhx+meGcSEHBluk8krE9lWUPnkC/XSHLg=
 github.com/VictoriaMetrics/VictoriaMetrics v1.116.0 h1:6N54OMM/WgRDQsT2+vPfRUohMjErum5h4oNGeE/s38M=
 github.com/VictoriaMetrics/VictoriaMetrics v1.116.0/go.mod h1:Tw44kkFQL2e3+NVEElaE/AYXhiUwJ/gpip4SK8l5zUg=
 github.com/VictoriaMetrics/easyproto v0.1.4 h1:r8cNvo8o6sR4QShBXQd1bKw/VVLSQma/V2KhTBPf+Sc=

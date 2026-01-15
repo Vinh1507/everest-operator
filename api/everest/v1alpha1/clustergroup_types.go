@@ -43,7 +43,7 @@ type ClusterReference struct {
 	// +kubebuilder:validation:MinLength=1
 	Name string `json:"name"`
 
-	// type is the type of database cluster (e.g., "pxc", "psmdb", "postgresql")
+	// type is the type of database cluster (e.g., "pxc", "psmdb", "postgresql", "starrocks")
 	// +kubebuilder:validation:Required
 	// +kubebuilder:validation:Enum=pxc;psmdb;postgresql
 	Type string `json:"type"`
