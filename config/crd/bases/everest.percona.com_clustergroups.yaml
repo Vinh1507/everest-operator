@@ -70,7 +70,7 @@ spec:
                       type: string
                     type:
                       description: type is the type of database cluster (e.g., "pxc",
-                        "psmdb", "postgresql")
+                        "psmdb", "postgresql", "starrocks")
                       enum:
                       - pxc
                       - psmdb

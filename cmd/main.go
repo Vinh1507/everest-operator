@@ -25,6 +25,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	starrocksv1 "github.com/StarRocks/starrocks-kubernetes-operator/pkg/apis/starrocks/v1"
 	vmv1beta1 "github.com/VictoriaMetrics/operator/api/operator/v1beta1"
 	chiv1 "github.com/altinity/clickhouse-operator/pkg/apis/clickhouse.altinity.com/v1"
 	enginefeatureseverestv1alpha1 "github.com/percona/everest-operator/api/enginefeatures.everest/v1alpha1"
@@ -42,6 +43,7 @@ import (
 	psmdbv1 "github.com/percona/percona-server-mongodb-operator/pkg/apis/psmdb/v1"
 	pxcv1 "github.com/percona/percona-xtradb-cluster-operator/pkg/apis/pxc/v1"
 	corev1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -118,6 +120,14 @@ func init() {
 	utilruntime.Must(psmdbv1.SchemeBuilder.AddToScheme(scheme))
 	utilruntime.Must(pxcv1.SchemeBuilder.AddToScheme(scheme))
 	utilruntime.Must(crunchyv1beta1.SchemeBuilder.AddToScheme(scheme))
+	scheme.AddKnownTypes(starrocksv1.GroupVersion,
+		&starrocksv1.StarRocksCluster{},
+		&starrocksv1.StarRocksClusterList{},
+		&starrocksv1.StarRocksWarehouse{},
+		&starrocksv1.StarRocksWarehouseList{},
+	)
+	metav1.AddToGroupVersion(scheme, starrocksv1.GroupVersion)
+	//utilruntime.Must(starrocksv1.SchemeBuilder.AddToScheme(scheme))
 	utilruntime.Must(chiv1.SchemeBuilder.AddToScheme(scheme))
 	// +kubebuilder:scaffold:scheme
 }

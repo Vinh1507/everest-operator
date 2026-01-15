@@ -25,6 +25,7 @@ import (
 	"time"
 
 	"github.com/AlekSi/pointer"
+	starrocksv1 "github.com/StarRocks/starrocks-kubernetes-operator/pkg/apis/starrocks/v1"
 	chiv1 "github.com/altinity/clickhouse-operator/pkg/apis/clickhouse.altinity.com/v1"
 	"github.com/go-logr/logr"
 	pgv2 "github.com/percona/percona-postgresql-operator/v2/pkg/apis/pgv2.percona.com/v2"
@@ -57,6 +58,7 @@ import (
 	"github.com/percona/everest-operator/internal/controller/everest/providers/pg"
 	"github.com/percona/everest-operator/internal/controller/everest/providers/psmdb"
 	"github.com/percona/everest-operator/internal/controller/everest/providers/pxc"
+	"github.com/percona/everest-operator/internal/controller/everest/providers/starrocks"
 	"github.com/percona/everest-operator/internal/predicates"
 )
 
@@ -118,6 +120,7 @@ var (
 	_ dbProvider = (*pxc.Provider)(nil)
 	_ dbProvider = (*pg.Provider)(nil)
 	_ dbProvider = (*psmdb.Provider)(nil)
+	_ dbProvider = (*starrocks.Provider)(nil)
 )
 
 //nolint:ireturn
@@ -137,6 +140,8 @@ func (r *DatabaseClusterReconciler) newDBProvider(
 		return pg.New(ctx, opts)
 	case everestv1alpha1.DatabaseEnginePSMDB:
 		return psmdb.New(ctx, opts)
+	case everestv1alpha1.DatabaseEngineStarRocks:
+		return starrocks.New(ctx, opts)
 	case everestv1alpha1.DatabaseEngineClickhouse:
 		return altinity.New(ctx, opts)
 	default:
@@ -1159,6 +1164,8 @@ func (r *DatabaseClusterReconciler) ReconcileWatchers(ctx context.Context) error
 			if err := addWatcher(t, &psmdbv1.PerconaServerMongoDB{}); err != nil {
 				return err
 			}
+		case everestv1alpha1.DatabaseEngineStarRocks:
+			if err := addWatcher(t, &starrocksv1.StarRocksCluster{}); err != nil {
 		case everestv1alpha1.DatabaseEngineClickhouse:
 			if err := addWatcher(t, &chiv1.ClickHouseInstallation{}); err != nil {
 				return err

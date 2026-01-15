@@ -5,6 +5,7 @@ go 1.25.4
 require (
 	github.com/AlekSi/pointer v1.2.0
 	github.com/Masterminds/semver/v3 v3.4.0
+	github.com/StarRocks/starrocks-kubernetes-operator v1.11.3
 	github.com/VictoriaMetrics/operator/api v0.61.2
 	github.com/altinity/clickhouse-operator v0.0.0-20251217134038-50e8d0490678
 	github.com/aws/aws-sdk-go-v2 v1.39.6

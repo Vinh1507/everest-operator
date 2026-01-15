@@ -42,6 +42,11 @@ const (
 	PSMDBDeploymentName = "percona-server-mongodb-operator"
 	// PGDeploymentName is the name of the Percona PostgreSQL operator deployment.
 	PGDeploymentName = "percona-postgresql-operator"
+	// StarRocksDeploymentName  is the name of the StarRocks operator deployment.
+	StarRocksDeploymentName = "kube-starrocks-operator"
+
+	// StarRocksOperatorNamespace is the namespace where StarRocks operator is deployed.
+	StarRocksOperatorNamespace = "starrocks"
 	// PGDeploymentName is the name of the Percona PostgreSQL operator deployment.
 	CHIDeploymentName = "clickhouse-operator"
 
@@ -51,6 +56,8 @@ const (
 	PSMDBAPIGroup = "psmdb.percona.com"
 	// PGAPIGroup is the API group for Percona PostgreSQL.
 	PGAPIGroup = "pgv2.percona.com"
+	// SRAPIGroup is the API group for StarRocks.
+	SRAPIGroup = "starrocks.com"
 	// CHIAPIGroup is the API group for Clickhouse.
 	CHIAPIGroup = "clickhouse.altinity.com"
 
@@ -65,6 +72,8 @@ const (
 	// LoadBalancerConfigKind is the kind for load balancer configs.
 	LoadBalancerConfigKind = "LoadBalancerConfig"
 
+	// StarRocksClusterKind is the kind for StarRock Installation
+	StarRocksClusterKind = "StarRocksCluster"
 	// ClickHouseInstallationKind is the kind for ClickHouse Installation.
 	ClickHouseInstallationKind = "ClickHouseInstallation"
 
