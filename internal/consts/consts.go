@@ -47,6 +47,8 @@ const (
 
 	// StarRocksOperatorNamespace is the namespace where StarRocks operator is deployed.
 	StarRocksOperatorNamespace = "starrocks"
+	// PGDeploymentName is the name of the Percona PostgreSQL operator deployment.
+	CHIDeploymentName = "clickhouse-operator"
 
 	// PXCAPIGroup is the API group for Percona XtraDB Cluster.
 	PXCAPIGroup = "pxc.percona.com"
@@ -56,6 +58,8 @@ const (
 	PGAPIGroup = "pgv2.percona.com"
 	// SRAPIGroup is the API group for StarRocks.
 	SRAPIGroup = "starrocks.com"
+	// CHIAPIGroup is the API group for Clickhouse.
+	CHIAPIGroup = "clickhouse.altinity.com"
 
 	// PerconaXtraDBClusterKind is the kind for Percona XtraDB Cluster.
 	PerconaXtraDBClusterKind = "PerconaXtraDBCluster"
@@ -70,6 +74,8 @@ const (
 
 	// StarRocksClusterKind is the kind for StarRock Installation
 	StarRocksClusterKind = "StarRocksCluster"
+	// ClickHouseInstallationKind is the kind for ClickHouse Installation.
+	ClickHouseInstallationKind = "ClickHouseInstallation"
 
 	// DatabaseClusterKind is the kind for DatabaseClusterKind.
 	DatabaseClusterKind = "DatabaseCluster"

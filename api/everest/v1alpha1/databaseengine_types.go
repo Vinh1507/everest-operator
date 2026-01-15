@@ -42,6 +42,8 @@ const (
 	DatabaseEnginePostgresql EngineType = "postgresql"
 	// DatabaseEngineStarRocks represents engine type for Starrocks clusters
 	DatabaseEngineStarRocks EngineType = "starrocks"
+	// DatabaseEnginePostgresql represents engine type for Clickhouse.
+	DatabaseEngineClickhouse EngineType = "clickhouse"
 
 	// DBEngineComponentRecommended represents recommended component status.
 	DBEngineComponentRecommended ComponentStatus = "recommended"

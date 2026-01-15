@@ -189,6 +189,8 @@ func GetDatabaseEngineForType(
 		engineName = consts.PGDeploymentName
 	case everestv1alpha1.DatabaseEngineStarRocks:
 		engineName = consts.StarRocksDeploymentName
+	case everestv1alpha1.DatabaseEngineClickhouse:
+		engineName = consts.CHIDeploymentName
 	default:
 		return nil, fmt.Errorf("unknown engine type: %s", engineType)
 	}
