@@ -42,6 +42,8 @@ const (
 	PSMDBDeploymentName = "percona-server-mongodb-operator"
 	// PGDeploymentName is the name of the Percona PostgreSQL operator deployment.
 	PGDeploymentName = "percona-postgresql-operator"
+	// PGDeploymentName is the name of the Percona PostgreSQL operator deployment.
+	CHIDeploymentName = "clickhouse-operator"
 
 	// PXCAPIGroup is the API group for Percona XtraDB Cluster.
 	PXCAPIGroup = "pxc.percona.com"
@@ -49,6 +51,8 @@ const (
 	PSMDBAPIGroup = "psmdb.percona.com"
 	// PGAPIGroup is the API group for Percona PostgreSQL.
 	PGAPIGroup = "pgv2.percona.com"
+	// CHIAPIGroup is the API group for Clickhouse.
+	CHIAPIGroup = "clickhouse.altinity.com"
 
 	// PerconaXtraDBClusterKind is the kind for Percona XtraDB Cluster.
 	PerconaXtraDBClusterKind = "PerconaXtraDBCluster"
@@ -60,6 +64,9 @@ const (
 	PerconaXtraDBClusterRestoreKind = "PerconaXtraDBClusterRestore"
 	// LoadBalancerConfigKind is the kind for load balancer configs.
 	LoadBalancerConfigKind = "LoadBalancerConfig"
+
+	// ClickHouseInstallationKind is the kind for ClickHouse Installation.
+	ClickHouseInstallationKind = "ClickHouseInstallation"
 
 	// DatabaseClusterKind is the kind for DatabaseClusterKind.
 	DatabaseClusterKind = "DatabaseCluster"

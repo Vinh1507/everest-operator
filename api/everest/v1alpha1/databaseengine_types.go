@@ -40,6 +40,8 @@ const (
 	DatabaseEnginePSMDB EngineType = "psmdb"
 	// DatabaseEnginePostgresql represents engine type for Postgresql clusters.
 	DatabaseEnginePostgresql EngineType = "postgresql"
+	// DatabaseEnginePostgresql represents engine type for Clickhouse.
+	DatabaseEngineClickhouse EngineType = "clickhouse"
 
 	// DBEngineComponentRecommended represents recommended component status.
 	DBEngineComponentRecommended ComponentStatus = "recommended"
