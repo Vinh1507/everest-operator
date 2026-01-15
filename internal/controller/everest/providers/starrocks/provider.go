@@ -18,6 +18,7 @@ package starrocks
 
 import (
 	"context"
+	"strings"
 
 	starrocksv1 "github.com/StarRocks/starrocks-kubernetes-operator/pkg/apis/starrocks/v1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
@@ -146,9 +147,51 @@ func (p *Provider) Status(ctx context.Context) (everestv1alpha1.DatabaseClusterS
 	status := everestv1alpha1.DatabaseClusterStatus{
 		Status: mapStarRocksPhaseToAppState(starrocksCluster),
 	}
+	// Set hostname to FE service name
+	// StarRocks FE service is named: {cluster-name}-fe-service
+	status.Hostname = p.DB.GetName() + "-fe-service." + p.DB.GetNamespace() + ".svc.cluster.local"
 
-	// Consider ready when phase is Running
-	ready := status.Status == everestv1alpha1.AppStateReady
+	// Set port to MySQL protocol port (FE query port)
+	status.Port = 9030
+
+	// Set ready and size based on FE and BE status
+	var totalRunning, totalSize int32
+	if starrocksCluster.Status.StarRocksFeStatus != nil {
+		feStatus := starrocksCluster.Status.StarRocksFeStatus
+		running := len(feStatus.RunningInstances)
+		total := len(feStatus.RunningInstances) + len(feStatus.CreatingInstances) + len(feStatus.FailedInstances)
+		totalRunning += int32(running)
+		totalSize += int32(total)
+	}
+	if starrocksCluster.Status.StarRocksBeStatus != nil {
+		beStatus := starrocksCluster.Status.StarRocksBeStatus
+		running := len(beStatus.RunningInstances)
+		total := len(beStatus.RunningInstances) + len(beStatus.CreatingInstances) + len(beStatus.FailedInstances)
+		totalRunning += int32(running)
+		totalSize += int32(total)
+	}
+	status.Ready = totalRunning
+	status.Size = totalSize
+
+	// Add connection info to message with status details
+	message := "User: root, Connect: mysql -h " + status.Hostname + " -P 9030 -u root"
+
+	// Add failed instances info if any
+	var failedPods []string
+	if starrocksCluster.Status.StarRocksFeStatus != nil {
+		failedPods = append(failedPods, starrocksCluster.Status.StarRocksFeStatus.FailedInstances...)
+	}
+	if starrocksCluster.Status.StarRocksBeStatus != nil {
+		failedPods = append(failedPods, starrocksCluster.Status.StarRocksBeStatus.FailedInstances...)
+	}
+	if len(failedPods) > 0 {
+		message += " | Failed pods: " + strings.Join(failedPods, ", ")
+	}
+
+	status.Message = message
+
+	// Consider ready based on status
+	ready := status.Status == everestv1alpha1.AppStateReady && status.Ready > 0
 
 	return status, ready, nil
 }
