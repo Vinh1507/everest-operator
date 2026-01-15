@@ -26,6 +26,17 @@ import (
 	"strings"
 
 	vmv1beta1 "github.com/VictoriaMetrics/operator/api/operator/v1beta1"
+	chiv1 "github.com/altinity/clickhouse-operator/pkg/apis/clickhouse.altinity.com/v1"
+	enginefeatureseverestv1alpha1 "github.com/percona/everest-operator/api/enginefeatures.everest/v1alpha1"
+	everestv1alpha1 "github.com/percona/everest-operator/api/everest/v1alpha1"
+	"github.com/percona/everest-operator/internal/consts"
+	enginefeatureseverestcontroller "github.com/percona/everest-operator/internal/controller/enginefeatures.everest"
+	"github.com/percona/everest-operator/internal/controller/everest"
+	controllers "github.com/percona/everest-operator/internal/controller/everest"
+	"github.com/percona/everest-operator/internal/controller/everest/common"
+	"github.com/percona/everest-operator/internal/predicates"
+	webhookenginefeatureseverestv1alpha1 "github.com/percona/everest-operator/internal/webhook/enginefeatures.everest/v1alpha1"
+	webhookeverestv1alpha1 "github.com/percona/everest-operator/internal/webhook/everest/v1alpha1"
 	pgv2 "github.com/percona/percona-postgresql-operator/v2/pkg/apis/pgv2.percona.com/v2"
 	crunchyv1beta1 "github.com/percona/percona-postgresql-operator/v2/pkg/apis/postgres-operator.crunchydata.com/v1beta1"
 	psmdbv1 "github.com/percona/percona-server-mongodb-operator/pkg/apis/psmdb/v1"
@@ -46,17 +57,6 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/metrics/filters"
 	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 	"sigs.k8s.io/controller-runtime/pkg/webhook"
-
-	enginefeatureseverestv1alpha1 "github.com/percona/everest-operator/api/enginefeatures.everest/v1alpha1"
-	everestv1alpha1 "github.com/percona/everest-operator/api/everest/v1alpha1"
-	"github.com/percona/everest-operator/internal/consts"
-	enginefeatureseverestcontroller "github.com/percona/everest-operator/internal/controller/enginefeatures.everest"
-	"github.com/percona/everest-operator/internal/controller/everest"
-	controllers "github.com/percona/everest-operator/internal/controller/everest"
-	"github.com/percona/everest-operator/internal/controller/everest/common"
-	"github.com/percona/everest-operator/internal/predicates"
-	webhookenginefeatureseverestv1alpha1 "github.com/percona/everest-operator/internal/webhook/enginefeatures.everest/v1alpha1"
-	webhookeverestv1alpha1 "github.com/percona/everest-operator/internal/webhook/everest/v1alpha1"
 )
 
 var (
@@ -118,6 +118,7 @@ func init() {
 	utilruntime.Must(psmdbv1.SchemeBuilder.AddToScheme(scheme))
 	utilruntime.Must(pxcv1.SchemeBuilder.AddToScheme(scheme))
 	utilruntime.Must(crunchyv1beta1.SchemeBuilder.AddToScheme(scheme))
+	utilruntime.Must(chiv1.SchemeBuilder.AddToScheme(scheme))
 	// +kubebuilder:scaffold:scheme
 }
 
