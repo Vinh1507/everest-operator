@@ -45,7 +45,7 @@ type ClusterReference struct {
 
 	// type is the type of database cluster (e.g., "pxc", "psmdb", "postgresql", "starrocks")
 	// +kubebuilder:validation:Required
-	// +kubebuilder:validation:Enum=pxc;psmdb;postgresql
+	// +kubebuilder:validation:Enum=pxc;psmdb;postgresql;clickhouse;starrocks
 	Type string `json:"type"`
 }
 
