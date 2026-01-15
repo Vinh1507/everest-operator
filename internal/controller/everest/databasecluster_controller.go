@@ -1166,6 +1166,8 @@ func (r *DatabaseClusterReconciler) ReconcileWatchers(ctx context.Context) error
 			}
 		case everestv1alpha1.DatabaseEngineStarRocks:
 			if err := addWatcher(t, &starrocksv1.StarRocksCluster{}); err != nil {
+				return err
+			}
 		case everestv1alpha1.DatabaseEngineClickhouse:
 			if err := addWatcher(t, &chiv1.ClickHouseInstallation{}); err != nil {
 				return err
