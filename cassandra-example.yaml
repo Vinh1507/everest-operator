@@ -1,0 +1,21 @@
+apiVersion: everest.percona.com/v1alpha1
+kind: DatabaseCluster
+metadata:
+  name: dc20
+  namespace: default
+spec:
+  groupName: cass-cluster
+  engine:
+    type: cassandra
+    version: "4.0.1"
+    replicas: 3
+    storage:
+      size: 10Gi
+      class: default
+    resources:
+      cpu: "1"
+      memory: "4Gi"
+    config: |
+      jvm-server-options:
+        initial_heap_size: "1G"
+        max_heap_size: "1G"

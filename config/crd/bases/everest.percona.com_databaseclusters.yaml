@@ -321,6 +321,7 @@ spec:
                     - psmdb
                     - clickhouse
                     - starrocks
+                    - cassandra
                     type: string
                     x-kubernetes-validations:
                     - message: .spec.engine.type cannot be changed

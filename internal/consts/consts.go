@@ -49,6 +49,8 @@ const (
 	StarRocksOperatorNamespace = "starrocks"
 	// PGDeploymentName is the name of the Percona PostgreSQL operator deployment.
 	CHIDeploymentName = "clickhouse-operator"
+	// CassandraDeploymentName is the name of the Cassandra operator deployment
+	CassandraDeploymentName = "cass-operator"
 
 	// PXCAPIGroup is the API group for Percona XtraDB Cluster.
 	PXCAPIGroup = "pxc.percona.com"
@@ -60,6 +62,8 @@ const (
 	SRAPIGroup = "starrocks.com"
 	// CHIAPIGroup is the API group for Clickhouse.
 	CHIAPIGroup = "clickhouse.altinity.com"
+	// CassAPIGroup is the API group for Cassandra
+	CassAPIGroup = "cassandra.datastax.com"
 
 	// PerconaXtraDBClusterKind is the kind for Percona XtraDB Cluster.
 	PerconaXtraDBClusterKind = "PerconaXtraDBCluster"
@@ -76,10 +80,10 @@ const (
 	StarRocksClusterKind = "StarRocksCluster"
 	// ClickHouseInstallationKind is the kind for ClickHouse Installation.
 	ClickHouseInstallationKind = "ClickHouseInstallation"
-
+	// CassandraDatacenterKind is the kind for CassandraDatacenter
+	CassandraDatacenterKind = "CassandraDatacenter"
 	// DatabaseClusterKind is the kind for DatabaseClusterKind.
 	DatabaseClusterKind = "DatabaseCluster"
-
 	// Engine Features.
 
 	// SplitHorizonDNSConfigKind is the kind for SplitHorizonDNSConfig.

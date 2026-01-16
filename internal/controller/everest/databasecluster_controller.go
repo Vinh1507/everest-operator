@@ -28,6 +28,7 @@ import (
 	starrocksv1 "github.com/StarRocks/starrocks-kubernetes-operator/pkg/apis/starrocks/v1"
 	chiv1 "github.com/altinity/clickhouse-operator/pkg/apis/clickhouse.altinity.com/v1"
 	"github.com/go-logr/logr"
+	cassv1 "github.com/k8ssandra/cass-operator/apis/cassandra/v1beta1"
 	pgv2 "github.com/percona/percona-postgresql-operator/v2/pkg/apis/pgv2.percona.com/v2"
 	crunchyv1beta1 "github.com/percona/percona-postgresql-operator/v2/pkg/apis/postgres-operator.crunchydata.com/v1beta1"
 	psmdbv1 "github.com/percona/percona-server-mongodb-operator/pkg/apis/psmdb/v1"
@@ -55,6 +56,7 @@ import (
 	"github.com/percona/everest-operator/internal/controller/everest/common"
 	"github.com/percona/everest-operator/internal/controller/everest/providers"
 	"github.com/percona/everest-operator/internal/controller/everest/providers/altinity"
+	"github.com/percona/everest-operator/internal/controller/everest/providers/cassandra"
 	"github.com/percona/everest-operator/internal/controller/everest/providers/pg"
 	"github.com/percona/everest-operator/internal/controller/everest/providers/psmdb"
 	"github.com/percona/everest-operator/internal/controller/everest/providers/pxc"
@@ -144,6 +146,8 @@ func (r *DatabaseClusterReconciler) newDBProvider(
 		return starrocks.New(ctx, opts)
 	case everestv1alpha1.DatabaseEngineClickhouse:
 		return altinity.New(ctx, opts)
+	case everestv1alpha1.DatabaseEngineCassandra:
+		return cassandra.New(ctx, opts)
 	default:
 		return nil, fmt.Errorf("unsupported engine type %s", engineType)
 	}
@@ -1170,6 +1174,10 @@ func (r *DatabaseClusterReconciler) ReconcileWatchers(ctx context.Context) error
 			}
 		case everestv1alpha1.DatabaseEngineClickhouse:
 			if err := addWatcher(t, &chiv1.ClickHouseInstallation{}); err != nil {
+				return err
+			}
+		case everestv1alpha1.DatabaseEngineCassandra:
+			if err := addWatcher(t, &cassv1.CassandraDatacenter{}); err != nil {
 				return err
 			}
 		default:
