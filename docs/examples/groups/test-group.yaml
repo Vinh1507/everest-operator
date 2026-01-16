@@ -1,0 +1,11 @@
+apiVersion: everest.percona.com/v1alpha1
+kind: ClusterGroup
+metadata:
+  name: test-group
+  namespace: everest
+spec:
+  clusters:
+    - name: my-pxc-cluster
+      type: pxc
+    - name: bang-mysql
+      type: pxc

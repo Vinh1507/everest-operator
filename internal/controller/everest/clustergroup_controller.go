@@ -62,13 +62,11 @@ func (r *ClusterGroupReconciler) Reconcile(
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 
-	// Nếu pause thì bỏ qua
 	if group.Spec.Paused {
 		return ctrl.Result{}, nil
 	}
 
-	// 1. List các cluster con theo label + namespace
-	var clusterList everestv1alpha1.DatabaseClusterList // ⚠️ đổi sang type cluster thật của bạn
+	var clusterList everestv1alpha1.DatabaseClusterList
 	if err := r.List(
 		ctx,
 		&clusterList,
@@ -80,7 +78,6 @@ func (r *ClusterGroupReconciler) Reconcile(
 		return ctrl.Result{}, err
 	}
 
-	// Map spec clusters để check name nhanh
 	specMap := make(map[string]everestv1alpha1.ClusterReference)
 	for _, c := range group.Spec.Clusters {
 		specMap[c.Name] = c
@@ -92,31 +89,25 @@ func (r *ClusterGroupReconciler) Reconcile(
 		statuses []everestv1alpha1.ClusterStatus
 	)
 
-	// 2. Đồng bộ status từng cluster con
 	for _, c := range clusterList.Items {
-
 		spec, ok := specMap[c.Name]
 		if !ok {
 			continue
 		}
 
 		cs := everestv1alpha1.ClusterStatus{
-			Name:               c.Name,
-			Type:               spec.Type,
-			Generation:         c.Generation,
-			ObservedGeneration: c.Status.ObservedGeneration,
-			// Phase:              c.Status.Phase,
-			Ready: c.Status.Ready > 0,
+			Name:           c.Name,
+			Type:           spec.Type,
+			DatabaseStatus: c.Status,
 		}
 
-		if cs.Ready {
+		if c.Status.Size == c.Status.Ready {
 			ready++
 		}
 
 		statuses = append(statuses, cs)
 	}
 
-	// 3. Xác định phase của group
 	phase := "Pending"
 	switch {
 	case ready == 0:
@@ -127,7 +118,6 @@ func (r *ClusterGroupReconciler) Reconcile(
 		phase = "Ready"
 	}
 
-	// 4. Chỉ update status khi CÓ THAY ĐỔI
 	changed := group.Status.ReadyClusters != ready ||
 		group.Status.TotalClusters != total ||
 		group.Status.Phase != phase ||

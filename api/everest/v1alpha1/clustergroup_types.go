@@ -23,8 +23,7 @@ import (
 type ClusterGroupSpec struct {
 	// clusters is a list of database clusters that belong to this group.
 	// When any cluster in the group reconciles, all other clusters will be triggered to reconcile as well.
-	// +kubebuilder:validation:Required
-	// +kubebuilder:validation:MinItems=1
+	// +optional
 	// +listType=map
 	// +listMapKey=name
 	Clusters []ClusterReference `json:"clusters"`
@@ -47,6 +46,15 @@ type ClusterReference struct {
 	// +kubebuilder:validation:Required
 	// +kubebuilder:validation:Enum=pxc;psmdb;postgresql;clickhouse;starrocks;cassandra
 	Type string `json:"type"`
+}
+
+// EndpointStatus represents an endpoint exposed by the ClusterGroup
+type EndpointStatus struct {
+	// name of the endpoint (e.g. primary, readonly, proxy, metrics)
+	Name string `json:"name"`
+
+	// endpoint address (e.g. host:port or URL)
+	Endpoint string `json:"endpoint"`
 }
 
 // ClusterGroupStatus defines the observed state of ClusterGroup
@@ -85,6 +93,12 @@ type ClusterGroupStatus struct {
 	// +optional
 	LastReconcileTime *metav1.Time `json:"lastReconcileTime,omitempty"`
 
+	// endpoints exposed by the cluster group
+	// +listType=map
+	// +listMapKey=name
+	// +optional
+	Endpoints []EndpointStatus `json:"endpoints,omitempty"`
+
 	// conditions represent the current state of the ClusterGroup resource.
 	// +listType=map
 	// +listMapKey=type
@@ -102,29 +116,9 @@ type ClusterStatus struct {
 	// +kubebuilder:validation:Required
 	Type string `json:"type"`
 
-	// generation is the current generation of the cluster
+	// Database status
 	// +optional
-	Generation int64 `json:"generation,omitempty"`
-
-	// observedGeneration is the generation observed by the cluster controller
-	// +optional
-	ObservedGeneration int64 `json:"observedGeneration,omitempty"`
-
-	// phase represents the current phase of the cluster
-	// +optional
-	Phase string `json:"phase,omitempty"`
-
-	// ready indicates if the cluster is ready
-	// +optional
-	Ready bool `json:"ready,omitempty"`
-
-	// message provides additional information about the cluster status
-	// +optional
-	Message string `json:"message,omitempty"`
-
-	// lastReconcileTime is the last time the cluster was reconciled
-	// +optional
-	LastReconcileTime *metav1.Time `json:"lastReconcileTime,omitempty"`
+	DatabaseStatus DatabaseClusterStatus `json:"databaseStatus,omitempty"`
 }
 
 // +kubebuilder:object:root=true
