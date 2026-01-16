@@ -17,9 +17,13 @@ package altinity
 
 import (
 	"context"
+	"strings"
 
 	chiv1 "github.com/altinity/clickhouse-operator/pkg/apis/clickhouse.altinity.com/v1"
+	corev1 "k8s.io/api/core/v1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
+	"k8s.io/apimachinery/pkg/api/meta"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -41,6 +45,8 @@ type Provider struct {
 const (
 	finalizerDeleteCHIPVC = "percona.com/delete-pvc"
 	finalizerDeleteCHISSL = "percona.com/delete-ssl"
+
+	conditionTypeReady = "Ready"
 )
 
 // New returns a new provider for Percona PostgreSQL.
@@ -62,7 +68,6 @@ func New(
 	// opts.DBEngine = dbEngine
 
 	currentCHISpec := chi.Spec
-	chi.Spec = defaultSpec()
 
 	p := &Provider{
 		ClickHouseInstallation: chi,
@@ -92,73 +97,75 @@ func (p *Provider) Apply(ctx context.Context) everestv1alpha1.Applier {
 
 // Status builds the DatabaseCluster Status based on the current state of the CHI.
 func (p *Provider) Status(ctx context.Context) (everestv1alpha1.DatabaseClusterStatus, bool, error) {
-	return everestv1alpha1.DatabaseClusterStatus{}, true, nil
-	// c := p.C
-	pg := p.ClickHouseInstallation
+	chi := p.ClickHouseInstallation
+	if chi == nil || chi.GetUID() == "" || chi.Status == nil || chi.Status.Status == "" {
+		return everestv1alpha1.DatabaseClusterStatus{
+			Status: everestv1alpha1.AppStateCreating,
+		}, false, nil
+	}
 
 	status := p.DB.Status
-	// prevStatus := status
-	status.Status = everestv1alpha1.AppState(pg.Status.Status).WithCreatingState()
-	// status.Hostname = pg.Status.Host
-	status.Ready = int32(pg.Status.HostsCount)
-	status.Size = int32(pg.Status.HostsCount)
-	// status.Port = pg.GetStatus()
-	// status.CRVersion = pg.Spec.CRVersion
-	status.Details = common.StatusAsPlainTextOrEmptyString(pg.Status)
+	status.Status = statusToAppState(chi.Status.Status).WithCreatingState()
+	status.Hostname = strings.Join(chi.Status.Endpoints, ",")
+	status.Size = int32(chi.Status.HostsCount)
+	status.Details = common.StatusAsPlainTextOrEmptyString(chi.Status)
 
-	// // If a restore is running for this database, set the database status to restoring
-	// if restoring, err := common.IsDatabaseClusterRestoreRunning(ctx, c, p.DB.GetName(), p.DB.GetNamespace()); err != nil {
-	// 	return status, false, err
-	// } else if restoring {
-	// 	status.Status = everestv1alpha1.AppStateRestoring
-	// }
+	// Calculate Ready pods
+	podList := &corev1.PodList{}
+	labelSelector := client.MatchingLabels{
+		"clickhouse.altinity.com/chi": chi.Name,
+	}
+	if err := p.C.List(ctx, podList, labelSelector, client.InNamespace(chi.Namespace)); err != nil {
+		return status, false, err
+	}
 
-	// if ok, err := isPVCResizing(ctx, p.C, p.DB.GetName(), p.DB.GetNamespace()); err != nil {
-	// 	return status, false, err
-	// } else if ok {
-	// 	status.Status = everestv1alpha1.AppStateResizingVolumes
-	// }
+	readyCount := 0
+	for _, pod := range podList.Items {
+		if pod.Status.Phase == corev1.PodRunning {
+			for _, cond := range pod.Status.Conditions {
+				if cond.Type == corev1.PodReady && cond.Status == corev1.ConditionTrue {
+					readyCount++
+					break
+				}
+			}
+		}
+	}
+	status.Ready = int32(readyCount)
 
-	// // If the PVC resize is currently in progress, or just finished, we need to
-	// // check if it failed in order to set or clear the error condition.
-	// if status.Status == everestv1alpha1.AppStateResizingVolumes ||
-	// 	prevStatus.Status == everestv1alpha1.AppStateResizingVolumes {
-	// 	meta.RemoveStatusCondition(&status.Conditions, everestv1alpha1.ConditionTypeVolumeResizeFailed)
-	// 	if failed, condMessage, err := common.VerifyPVCResizeFailure(ctx, p.C, p.DB.GetName(), p.DB.GetNamespace()); err != nil {
-	// 		return status, false, err
-	// 	} else if failed {
-	// 		// XXX: If a PVC resize failed, the DB operator will revert the
-	// 		// spec to the previous one and unset the annotation we use to
-	// 		// detect that a PVC resize is in progress. This means that we
-	// 		// would move away from the ResizingVolumes state until the next
-	// 		// reconcile loop where the PVC resize will be retried. To avoid
-	// 		// having the state change back and forth, we keep the state as
-	// 		// ResizingVolumes until the PVC resize is successful.
-	// 		status.Status = everestv1alpha1.AppStateResizingVolumes
-	// 		meta.SetStatusCondition(&status.Conditions, metav1.Condition{
-	// 			Type:               everestv1alpha1.ConditionTypeVolumeResizeFailed,
-	// 			Status:             metav1.ConditionTrue,
-	// 			Reason:             everestv1alpha1.ReasonVolumeResizeFailed,
-	// 			Message:            condMessage,
-	// 			LastTransitionTime: metav1.Now(),
-	// 			ObservedGeneration: p.DB.GetGeneration(),
-	// 		})
-	// 	}
-	// }
-
-	// if upgrading, err := p.isDatabaseUpgrading(ctx); err != nil {
-	// 	return status, false, err
-	// } else if upgrading {
-	// 	status.Status = everestv1alpha1.AppStateUpgrading
-	// }
-
-	// recCRVer, err := common.GetRecommendedCRVersion(ctx, p.C, consts.CHIDeploymentName, p.DB)
-	// if err != nil && !k8serrors.IsNotFound(err) {
-	// 	return status, false, err
-	// }
-	// status.RecommendedCRVersion = recCRVer
+	if status.Status == everestv1alpha1.AppStateReady {
+		meta.SetStatusCondition(&status.Conditions, metav1.Condition{
+			Type:               conditionTypeReady,
+			Status:             metav1.ConditionTrue,
+			Reason:             "ClusterReady",
+			Message:            "Cluster is ready",
+			LastTransitionTime: metav1.Now(),
+			ObservedGeneration: p.DB.GetGeneration(),
+		})
+	} else {
+		meta.SetStatusCondition(&status.Conditions, metav1.Condition{
+			Type:               conditionTypeReady,
+			Status:             metav1.ConditionFalse,
+			Reason:             "ClusterNotReady",
+			Message:            "Cluster is not ready",
+			LastTransitionTime: metav1.Now(),
+			ObservedGeneration: p.DB.GetGeneration(),
+		})
+	}
 
 	return status, true, nil
+}
+
+func statusToAppState(status string) everestv1alpha1.AppState {
+	switch status {
+	case chiv1.StatusCompleted:
+		return everestv1alpha1.AppStateReady
+	case chiv1.StatusInProgress:
+		return everestv1alpha1.AppStateInit
+	case chiv1.StatusTerminating:
+		return everestv1alpha1.AppStateDeleting
+	default:
+		return everestv1alpha1.AppStateUnknown
+	}
 }
 
 // Cleanup runs the cleanup routines and returns true if the cleanup is done.
