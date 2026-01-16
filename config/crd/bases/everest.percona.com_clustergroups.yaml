@@ -75,6 +75,9 @@ spec:
                       - pxc
                       - psmdb
                       - postgresql
+                      - clickhouse
+                      - starrocks
+                      - cassandra
                       type: string
                   required:
                   - name

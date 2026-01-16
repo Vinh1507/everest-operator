@@ -37,6 +37,8 @@ func (p *applier) ResetDefaults() error {
 func (p *applier) Paused(paused bool) {
 	if paused {
 		p.ClickHouseInstallation.Spec.Stop = types.NewStringBool(true)
+	} else {
+		p.ClickHouseInstallation.Spec.Stop = types.NewStringBool(false)
 	}
 }
 
@@ -58,51 +60,58 @@ func (p *applier) Metadata() error {
 func (p *applier) Engine() error {
 	chi := p.ClickHouseInstallation
 	database := p.DB
-	firstChiCluster := chi.Spec.Configuration.Clusters[0]
-	firstChiCluster.Name = "first"
-	firstChiCluster.Layout = &chiv1.ChiClusterLayout{
+
+	if chi.Spec.Configuration == nil || len(chi.Spec.Configuration.Clusters) == 0 {
+		chi.Spec = defaultSpec()
+	}
+
+	if chi.Spec.Templates == nil {
+		chi.Spec.Templates = &chiv1.Templates{}
+	}
+
+	if chi.Spec.Defaults == nil {
+		chi.Spec.Defaults = &chiv1.Defaults{
+			Templates: chiv1.NewTemplatesList(),
+		}
+	} else if chi.Spec.Defaults.Templates == nil {
+		chi.Spec.Defaults.Templates = chiv1.NewTemplatesList()
+	}
+
+	// Layout
+	chi.Spec.Configuration.Clusters[0].Layout = &chiv1.ChiClusterLayout{
 		ShardsCount:   int(database.Spec.Engine.Replicas),
 		ReplicasCount: 1,
 	}
 
-	// Initialize templates if needed
-	if chi.Spec.Templates.PodTemplates == nil {
-		chi.Spec.Templates.PodTemplates = []chiv1.PodTemplate{}
-	}
-
+	// Resources
 	resources := &corev1.ResourceRequirements{
 		Requests: corev1.ResourceList{},
 		Limits:   corev1.ResourceList{},
 	}
 
-	// CPU
 	if !database.Spec.Engine.Resources.CPU.IsZero() {
-		cpu := database.Spec.Engine.Resources.CPU
-		resources.Requests[corev1.ResourceCPU] = cpu
-		resources.Limits[corev1.ResourceCPU] = cpu
+		resources.Requests[corev1.ResourceCPU] = database.Spec.Engine.Resources.CPU
+		resources.Limits[corev1.ResourceCPU] = database.Spec.Engine.Resources.CPU
 	}
 
-	// Memory
 	if !database.Spec.Engine.Resources.Memory.IsZero() {
-		memory := database.Spec.Engine.Resources.Memory
-		resources.Requests[corev1.ResourceMemory] = memory
-		resources.Limits[corev1.ResourceMemory] = memory
+		resources.Requests[corev1.ResourceMemory] = database.Spec.Engine.Resources.Memory
+		resources.Limits[corev1.ResourceMemory] = database.Spec.Engine.Resources.Memory
 	}
+
+	// podTemplate := chiv1.PodTemplate{
+	// 	Name: "pod-template",
+	// 	Spec: corev1.PodSpec{
+	// 		Containers: []corev1.Container{
+	// 			{
+	// 				Name:      "clickhouse",
+	// 				Resources: *resources,
+	// 			},
+	// 		},
+	// 	},
+	// }
 
 	// Storage
-
-	// Initialize templates if needed
-	if p.ClickHouseInstallation.Spec.Templates.VolumeClaimTemplates == nil {
-		p.ClickHouseInstallation.Spec.Templates.VolumeClaimTemplates = []chiv1.VolumeClaimTemplate{}
-	}
-
-	// volumeResources := &corev1.VolumeResourceRequirements{
-	// 	Requests: corev1.ResourceList{},
-	// }
-	// if !database.Spec.Engine.Storage.Size.IsZero() {
-	// 	volumeResources.Requests[corev1.ResourceStorage] = database.Spec.Engine.Storage.Size
-	// }
-
 	volumeClaimTemplate := chiv1.VolumeClaimTemplate{
 		Name: "storage-template",
 		Spec: corev1.PersistentVolumeClaimSpec{
@@ -118,28 +127,11 @@ func (p *applier) Engine() error {
 		},
 	}
 
-	// Set storage class if specified
-	// volumeClaimTemplate.Spec.StorageClassName = database.Spec.Engine.Storage.Class
+	// chi.Spec.Templates.PodTemplates = []chiv1.PodTemplate{podTemplate}
+	chi.Spec.Templates.VolumeClaimTemplates = []chiv1.VolumeClaimTemplate{volumeClaimTemplate}
 
-	// Update or append template
-	found := false
-	for i, tmpl := range p.ClickHouseInstallation.Spec.Templates.VolumeClaimTemplates {
-		if tmpl.Name == "storage-template" {
-			p.ClickHouseInstallation.Spec.Templates.VolumeClaimTemplates[i] = volumeClaimTemplate
-			found = true
-			break
-		}
-	}
-	if !found {
-
-		p.ClickHouseInstallation.Spec.Templates.VolumeClaimTemplates = append(
-			p.ClickHouseInstallation.Spec.Templates.VolumeClaimTemplates,
-			volumeClaimTemplate,
-		)
-	}
-
-	// Set default template reference
-	p.ClickHouseInstallation.Spec.Defaults.Templates.DataVolumeClaimTemplate = "storage-template"
+	// chi.Spec.Defaults.Templates.PodTemplate = podTemplate.Name
+	chi.Spec.Defaults.Templates.DataVolumeClaimTemplate = volumeClaimTemplate.Name
 
 	return nil
 }

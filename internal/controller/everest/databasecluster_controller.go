@@ -202,7 +202,7 @@ func (r *DatabaseClusterReconciler) reconcileDB(
 	p.SetName(db.GetName())
 	p.SetNamespace(db.GetNamespace())
 
-	if _, err := controllerutil.CreateOrUpdate(ctx, r.Client, p.DBObject(), func() error {
+	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, p.DBObject(), func() error {
 		applier := p.Apply(ctx)
 
 		if err := applier.ResetDefaults(); err != nil {
