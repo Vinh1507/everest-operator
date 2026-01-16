@@ -38,6 +38,7 @@ import (
 	"github.com/percona/everest-operator/internal/predicates"
 	webhookenginefeatureseverestv1alpha1 "github.com/percona/everest-operator/internal/webhook/enginefeatures.everest/v1alpha1"
 	webhookeverestv1alpha1 "github.com/percona/everest-operator/internal/webhook/everest/v1alpha1"
+	cassv1beta1 "github.com/k8ssandra/cass-operator/apis/cassandra/v1beta1"
 	pgv2 "github.com/percona/percona-postgresql-operator/v2/pkg/apis/pgv2.percona.com/v2"
 	crunchyv1beta1 "github.com/percona/percona-postgresql-operator/v2/pkg/apis/postgres-operator.crunchydata.com/v1beta1"
 	psmdbv1 "github.com/percona/percona-server-mongodb-operator/pkg/apis/psmdb/v1"
@@ -119,6 +120,7 @@ func init() {
 	utilruntime.Must(pgv2.SchemeBuilder.AddToScheme(scheme))
 	utilruntime.Must(psmdbv1.SchemeBuilder.AddToScheme(scheme))
 	utilruntime.Must(pxcv1.SchemeBuilder.AddToScheme(scheme))
+	utilruntime.Must(pxcv1.SchemeBuilder.AddToScheme(scheme))
 	utilruntime.Must(crunchyv1beta1.SchemeBuilder.AddToScheme(scheme))
 	scheme.AddKnownTypes(starrocksv1.GroupVersion,
 		&starrocksv1.StarRocksCluster{},
@@ -129,6 +131,7 @@ func init() {
 	metav1.AddToGroupVersion(scheme, starrocksv1.GroupVersion)
 	//utilruntime.Must(starrocksv1.SchemeBuilder.AddToScheme(scheme))
 	utilruntime.Must(chiv1.SchemeBuilder.AddToScheme(scheme))
+	utilruntime.Must(cassv1beta1.AddToScheme(scheme))
 	// +kubebuilder:scaffold:scheme
 }
 
