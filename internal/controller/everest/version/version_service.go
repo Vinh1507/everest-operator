@@ -59,6 +59,9 @@ var operatorNames = map[everestv1alpha1.EngineType]string{
 	everestv1alpha1.DatabaseEnginePXC:        "pxc-operator",
 	everestv1alpha1.DatabaseEnginePSMDB:      "psmdb-operator",
 	everestv1alpha1.DatabaseEnginePostgresql: "pg-operator",
+	everestv1alpha1.DatabaseEngineClickhouse: "clickhouse-operator",
+	everestv1alpha1.DatabaseEngineStarRocks:  "kube-starrocks-operator",
+	everestv1alpha1.DatabaseEngineCassandra:  "cass-operator",
 }
 
 // NewVersionService creates a version service client.
@@ -72,6 +75,10 @@ func NewVersionService() *Service {
 
 // GetVersions returns a matrix of available versions for a database engine.
 func (v *Service) GetVersions(engineType everestv1alpha1.EngineType, operatorVersion string) (*Matrix, error) {
+	// TODO: Ignore get versions data for custom databases
+	if engineType == everestv1alpha1.DatabaseEngineClickhouse || engineType == everestv1alpha1.DatabaseEngineStarRocks || engineType == everestv1alpha1.DatabaseEngineCassandra {
+		return &Matrix{}, nil
+	}
 	resp, err := http.Get(fmt.Sprintf("%s/%s/%s", v.url, operatorNames[engineType], operatorVersion)) //nolint:noctx
 	if err != nil {
 		return nil, err

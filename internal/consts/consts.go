@@ -44,13 +44,15 @@ const (
 	PGDeploymentName = "percona-postgresql-operator"
 	// StarRocksDeploymentName  is the name of the StarRocks operator deployment.
 	StarRocksDeploymentName = "kube-starrocks-operator"
+	// CassandraDeploymentName  is the name of the CassandraDeploymentName operator deployment.
+	CassandraDeploymentName = "cass-operator"
+	// ClickHouseDeploymentName  is the name of the ClickHouse operator deployment.
+	ClickHouseDeploymentName = "clickhouse-operator"
 
 	// StarRocksOperatorNamespace is the namespace where StarRocks operator is deployed.
 	StarRocksOperatorNamespace = "starrocks"
 	// PGDeploymentName is the name of the Percona PostgreSQL operator deployment.
 	CHIDeploymentName = "clickhouse-operator"
-	// CassandraDeploymentName is the name of the Cassandra operator deployment
-	CassandraDeploymentName = "cass-operator"
 
 	// PXCAPIGroup is the API group for Percona XtraDB Cluster.
 	PXCAPIGroup = "pxc.percona.com"

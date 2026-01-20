@@ -58,9 +58,12 @@ const (
 var errInstallPlanNotFound = errors.New("install plan not found")
 
 var operatorEngine = map[string]everestv1alpha1.EngineType{
-	consts.PXCDeploymentName:   everestv1alpha1.DatabaseEnginePXC,
-	consts.PSMDBDeploymentName: everestv1alpha1.DatabaseEnginePSMDB,
-	consts.PGDeploymentName:    everestv1alpha1.DatabaseEnginePostgresql,
+	consts.PXCDeploymentName:        everestv1alpha1.DatabaseEnginePXC,
+	consts.PSMDBDeploymentName:      everestv1alpha1.DatabaseEnginePSMDB,
+	consts.PGDeploymentName:         everestv1alpha1.DatabaseEnginePostgresql,
+	consts.ClickHouseDeploymentName: everestv1alpha1.DatabaseEngineClickhouse,
+	consts.StarRocksDeploymentName:  everestv1alpha1.DatabaseEngineStarRocks,
+	consts.CassandraDeploymentName:  everestv1alpha1.DatabaseEngineCassandra,
 }
 
 // DatabaseEngineReconciler reconciles a DatabaseEngine object.

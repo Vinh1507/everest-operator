@@ -24,6 +24,9 @@ var userSecretKeys = map[everestv1alpha1.EngineType][]everestv1alpha1.SecretKey{
 	// not supported until K8SPG-570 is fixed.
 	// See - https://perconadev.atlassian.net/browse/K8SPG-570
 	everestv1alpha1.DatabaseEnginePostgresql: {},
+	everestv1alpha1.DatabaseEngineClickhouse: {},
+	everestv1alpha1.DatabaseEngineStarRocks:  {},
+	everestv1alpha1.DatabaseEngineCassandra:  {},
 }
 
 var (

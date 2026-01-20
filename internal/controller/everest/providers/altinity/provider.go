@@ -98,6 +98,7 @@ func (p *Provider) Apply(ctx context.Context) everestv1alpha1.Applier {
 // Status builds the DatabaseCluster Status based on the current state of the CHI.
 func (p *Provider) Status(ctx context.Context) (everestv1alpha1.DatabaseClusterStatus, bool, error) {
 	chi := p.ClickHouseInstallation
+	// Fix: Clickhouse struct contains mutex lock
 	if chi == nil || chi.GetUID() == "" || chi.Status == nil || chi.Status.Status == "" {
 		return everestv1alpha1.DatabaseClusterStatus{
 			Status: everestv1alpha1.AppStateCreating,

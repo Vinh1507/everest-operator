@@ -39,7 +39,7 @@ func New(
 		return nil, err
 	}
 
-	opts.DBEngine, err = common.GetDatabaseEngine(ctx, client, consts.CassandraDeploymentName, consts.CassandraDeploymentName)
+	opts.DBEngine, err = common.GetDatabaseEngine(ctx, client, consts.CassandraDeploymentName, opts.DB.GetNamespace())
 	if err != nil {
 		return nil, err
 	}
