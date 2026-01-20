@@ -1,0 +1,29 @@
+apiVersion: everest.percona.com/v1alpha1
+kind: DatabaseEngine
+metadata:
+  name: cass-operator
+  namespace: cass-operator
+spec:
+  secretKeys: {}
+  type: cassandra
+---
+
+apiVersion: everest.percona.com/v1alpha1
+kind: DatabaseEngine
+metadata:
+  name: kube-starrocks-operator
+  namespace: starrocks
+spec:
+  secretKeys: {}
+  type: starrocks
+---
+
+apiVersion: everest.percona.com/v1alpha1
+kind: DatabaseEngine
+metadata:
+  name: clickhouse-operator
+  namespace: kube-system
+spec:
+  secretKeys: {}
+  type: clickhouse
+
