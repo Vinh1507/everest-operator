@@ -430,6 +430,15 @@ type DatabaseClusterSpec struct {
 	// +optional
 	GroupName string `json:"groupName,omitempty"`
 
+	// Custom holds provider-specific configuration that is not defined
+	// in the DatabaseCluster API schema. It allows users to pass
+	// arbitrary key-value settings directly to the underlying
+	// provider-specific Custom Resource without API changes.
+	// +optional
+	// +kubebuilder:pruning:PreserveUnknownFields
+	// +kubebuilder:validation:Type=object
+	Custom map[string]string `json:"custom,omitempty"`
+
 	// Paused is a flag to stop the cluster
 	Paused bool `json:"paused,omitempty"`
 	// AllowUnsafeConfiguration field used to ensure that the user can create configurations unfit for production use.

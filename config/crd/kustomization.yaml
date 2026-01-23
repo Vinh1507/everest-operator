@@ -14,6 +14,7 @@ resources:
 - bases/everest.percona.com_loadbalancerconfigs.yaml
 - bases/enginefeatures.everest.percona.com_splithorizondnsconfigs.yaml
 - bases/everest.percona.com_clustergroups.yaml
+- bases/everest.percona.com_opsrequests.yaml
 # +kubebuilder:scaffold:crdkustomizeresource
 
 patches:

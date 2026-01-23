@@ -554,6 +554,28 @@ func (p *applier) updatePGConfig(
 		pg.Spec.Patroni.DynamicConfiguration = make(crunchyv1beta1.SchemalessObject)
 	}
 
+	// TODO: vinhbh
+	if db.Spec.Custom != nil {
+		enabledStr, hasEnabled := db.Spec.Custom["patroni.switchover.enabled"]
+		target, hasTarget := db.Spec.Custom["patroni.switchover.targetInstance"]
+		triggerTime, hasTriggerTime := db.Annotations["postgres-operator.crunchydata.com/trigger-switchover"]
+
+		if hasEnabled && enabledStr != "" {
+			pg.Spec.Patroni.Switchover = &crunchyv1beta1.PatroniSwitchover{
+				Enabled: enabledStr == "true",
+			}
+			if hasTarget && target != "" {
+				pg.Spec.Patroni.Switchover.TargetInstance = &target
+			}
+			if hasTriggerTime && triggerTime != "" {
+				if pg.Annotations == nil {
+					pg.Annotations = map[string]string{}
+				}
+				pg.Annotations["postgres-operator.crunchydata.com/trigger-switchover"] = triggerTime
+			}
+		}
+	}
+
 	dc := pg.Spec.Patroni.DynamicConfiguration
 	if _, ok := dc["postgresql"]; !ok {
 		dc["postgresql"] = make(map[string]any)

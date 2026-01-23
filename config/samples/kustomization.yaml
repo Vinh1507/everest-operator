@@ -8,4 +8,5 @@ resources:
 - everest_v1alpha1_monitoringconfig.yaml
 - enginefeatures.everest_v1alpha1_splithorizondnsconfig.yaml
 - everest_v1alpha1_clustergroup.yaml
+- everest_v1alpha1_opsrequest.yaml
 # +kubebuilder:scaffold:manifestskustomizesamples

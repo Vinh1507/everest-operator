@@ -1,0 +1,19 @@
+apiVersion: everest.percona.com/v1alpha1
+kind: OpsRequest
+metadata:
+  name: switchover-pg-7
+  namespace: everest
+spec:
+  groupRef:
+    name: test-group-3
+    namespace: everest
+  clusters:
+    - name: my-pg-cluster
+      namespace: everest
+      type: postgresql
+  type: Switchover
+  params:
+    enabled: "false"
+    targetInstance: "my-pg-cluster-instance1-f5pc"
+  timeout: 10m
+  force: false

@@ -1,0 +1,16 @@
+apiVersion: everest.percona.com/v1alpha1
+kind: OpsRequest
+metadata:
+  name: test-start-3
+  namespace: everest
+spec:
+  groupRef:
+    name: test-group
+    namespace: everest
+  clusters:
+    - name: my-pxc-cluster
+      namespace: everest
+      type: pxc
+  type: Start
+  timeout: 10000m
+  force: false

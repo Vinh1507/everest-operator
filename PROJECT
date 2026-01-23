@@ -143,4 +143,13 @@ resources:
   kind: ClusterGroup
   path: github.com/percona/everest-operator/api/everest/v1alpha1
   version: v1alpha1
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: percona.com
+  group: everest
+  kind: OpsRequest
+  path: github.com/percona/everest-operator/api/everest/v1alpha1
+  version: v1alpha1
 version: "3"

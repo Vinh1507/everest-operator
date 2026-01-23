@@ -1,0 +1,9 @@
+apiVersion: everest.percona.com/v1alpha1
+kind: OpsRequest
+metadata:
+  labels:
+    app.kubernetes.io/name: everest-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: opsrequest-sample
+spec:
+  # TODO(user): Add fields here

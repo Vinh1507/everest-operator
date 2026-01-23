@@ -103,6 +103,7 @@ rules:
   - dataimportjobs
   - loadbalancerconfigs
   - monitoringconfigs
+  - opsrequests
   - podschedulingpolicies
   verbs:
   - create
@@ -122,6 +123,7 @@ rules:
   - databaseclusters/finalizers
   - databaseengines/finalizers
   - dataimportjobs/finalizers
+  - opsrequests/finalizers
   verbs:
   - update
 - apiGroups:
@@ -136,6 +138,7 @@ rules:
   - dataimportjobs/status
   - loadbalancerconfigs/status
   - monitoringconfigs/status
+  - opsrequests/status
   - podschedulingpolicies/status
   verbs:
   - get

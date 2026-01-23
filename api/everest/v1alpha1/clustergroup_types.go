@@ -42,8 +42,12 @@ type ClusterReference struct {
 	// +kubebuilder:validation:MinLength=1
 	Name string `json:"name"`
 
+	// Namespace of the database cluster (defaults to OpsRequest namespace)
+	// +optional
+	Namespace string `json:"namespace,omitempty"`
+
 	// type is the type of database cluster (e.g., "pxc", "psmdb", "postgresql", "starrocks")
-	// +kubebuilder:validation:Required
+	// +optional
 	// +kubebuilder:validation:Enum=pxc;psmdb;postgresql;clickhouse;starrocks;cassandra
 	Type string `json:"type"`
 }

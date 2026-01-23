@@ -1,0 +1,19 @@
+apiVersion: everest.percona.com/v1alpha1
+kind: OpsRequest
+metadata:
+  name: starrocks-update-fe-rep-10
+  namespace: everest
+spec:
+  groupRef:
+    name: test-group-3
+    namespace: everest
+  clusters:
+    - name: starrock-3
+      namespace: everest
+      type: starrocks
+  type: Custom
+  params:
+    action: UpdateFrontendReplicas
+    replicas: "4"
+  timeout: 10m
+  force: false

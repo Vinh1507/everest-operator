@@ -101,6 +101,7 @@ type dbProvider interface {
 	metav1.Object
 	reconcileHooks
 	Apply(ctx context.Context) everestv1alpha1.Applier
+	GetOpsHandler(ctx context.Context, opsRequest everestv1alpha1.OpsRequest) providers.OperationHandler
 	// Status returns the current status of the database cluster.
 	// The second return value indicates whether the database's status is ready.
 	// It may appear that there is no error, but the status is not ready yet (e.g. waiting for services to be created).

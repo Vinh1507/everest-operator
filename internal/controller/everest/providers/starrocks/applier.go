@@ -17,6 +17,8 @@ package starrocks
 
 import (
 	"context"
+	"fmt"
+	"strconv"
 
 	starrocksv1 "github.com/StarRocks/starrocks-kubernetes-operator/pkg/apis/starrocks/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -61,6 +63,8 @@ func (a *applier) Engine() error {
 	db := a.DB
 	engineVersion := a.dbEngineVersionOrDefault()
 
+	custom := db.Spec.Custom
+
 	// Configure Frontend (FE) - query coordination layer
 	if a.StarRocksCluster.Spec.StarRocksFeSpec == nil {
 		a.StarRocksCluster.Spec.StarRocksFeSpec = &starrocksv1.StarRocksFeSpec{}
@@ -71,7 +75,13 @@ func (a *applier) Engine() error {
 	// Set FE replicas (typically 1 or 3 for HA)
 	// For now, we'll use 1 replica as minimum
 	feReplicas := int32(1)
-	if db.Spec.Engine.Replicas > 1 {
+	if _, found := custom["frontend.replicas"]; found {
+		replicas, err := strconv.ParseInt(custom["frontend.replicas"], 10, 32)
+		if err != nil {
+			return fmt.Errorf("invalid int32 for key frontend.replicas: %w", err)
+		}
+		feReplicas = int32(replicas)
+	} else if db.Spec.Engine.Replicas > 1 {
 		// For HA, we might want odd number of FE nodes
 		feReplicas = int32(3)
 	}

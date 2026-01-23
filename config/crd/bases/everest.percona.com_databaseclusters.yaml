@@ -124,6 +124,22 @@ spec:
                       type: object
                     type: array
                 type: object
+              custom:
+                additionalProperties:
+                  type: string
+                description: |-
+                  Custom contains provider-specific configuration that is not
+                  part of the DatabaseCluster API. This allows users to pass
+                  arbitrary configuration to the underlying provider CR.
+
+                  Example:
+                    custom:
+                      pxc:
+                        haproxy:
+                          enabled: true
+                          replicas: 3
+                type: object
+                x-kubernetes-preserve-unknown-fields: true
               dataSource:
                 description: DataSource defines a data source for bootstraping a new
                   cluster
